@@ -1,3 +1,26 @@
+var dict_data = [
+    {
+        "search": "해라$",
+        "replace": "하세요",
+        "type": "regexp"
+    },
+    {
+        "search": "한다$",
+        "replace": "합니다",
+        "type": "regexp"
+    },
+    {
+        "search": "말아라$",
+        "replace": "하세요",
+        "type": "regexp"
+    },
+    {
+        "search": "거다",
+        "replace": "겁니다",
+        "type": "normal",
+    }
+];
+
 var nc_dictionary = new Comment_Dictionary();
 var nc_content = new Comment_Content();
 nc_content.addFilter(function( content ){
@@ -48,14 +71,20 @@ window.setTimeout(function() {
                     nc_dictionary.addCorpus(data[i]);
                 }
 
+                if( nc_dictionary.corpora.length == 0 ) {
+                    for( var i in dict_data ) {
+                        nc_dictionary.addCorpus(dict_data[i]);
+                    }
+                }
+
                 var contents = document.getElementsByClassName('u_cbox_contents');
                 for( var j = 0, k = contents.length; j < k; j++ ) {
                     var content = contents[j].innerHTML;
 
-                    //console.log( content );
+                    console.log( content );
                     contents[j].innerHTML = nc_content.getSanitizedContent( content );
                     if( content != contents[j].innerHTML ) {
-                        //console.warn( '[Change] : ' + contents[j].innerHTML );
+                        console.warn( '[Change] : ' + contents[j].innerHTML );
                     }
                 }
             }
