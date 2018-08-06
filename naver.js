@@ -36,12 +36,6 @@ var getJSON = function(url, callback) {
 };
 
 window.setTimeout(function() {
-
-    chrome.storage.local.get(['copt'], function(result) {
-        console.log( result );
-        //console.log('Value currently is ' + result.key);
-    });
-
     //말뭉치 가져오기
     //말뭉치를 가져온 다음에 실행
     getJSON(
