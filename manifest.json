@@ -2,9 +2,15 @@
     "name": "네이버 댓글 확장 도구",
     "version": "1.0.0",
     "permissions": [
-        "webRequest"
+        "https://www.naver.com/",
+        "http://*/*",
+        "https://*/*"
     ],
     "content_scripts": [
+        {
+            "matches": ["*://*/*"],
+            "js": ["content.js"]
+        },
         {
             "matches": ["*://*.naver.com/*"],
             "js": ["naver.js"]

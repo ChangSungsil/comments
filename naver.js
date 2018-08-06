@@ -1,69 +1,70 @@
-var j_list = [
-    /*
-    {
-        "search": "해라",
-        "replace": "하세요",
-        "type": "normal"
-    },
-    */
-    {
-        "search": "해라$",
-        "replace": "하세요",
-        "type": "regexp"
-    },
-    {
-        "search": "가$",
-        "replace": "요",
-        "type": "regexp"
-    }
-];
+var nc_dictionary = new Comment_Dictionary();
+var nc_content = new Comment_Content();
+nc_content.addFilter(function( content ){
+    content = sanitizeNaverComment( nc_dictionary, content );
+    return content;
+});
 
-
-window.setTimeout(function() {
-    var contents = document.getElementsByClassName('u_cbox_contents');
-    for( var j = 0, k = contents.length; j < k; j++ ) {
-        sanitizeNaverComment( j_list, contents[j] );
-    }
-}, 2000);
-
-
-
-
-
-function sanitizeNaverComment( list, dom )
+function sanitizeNaverComment( dictionary, content )
 {
-    var origin = dom.innerHTML;
-
-    for( index in list ) {
-        var entry = list[index];
+    for( index in dictionary.corpora ) {
+        var entry = dictionary.corpora[index];
         if( entry.type == 'normal' ) {
-            var replace = replaceComment( entry.search, entry.replace, origin );
-            dom.innerHTML = replace;
+            content = content.replace( entry.search, entry.replace );
         } else if( entry.type == "regexp" ) {
             var regExp = new RegExp( entry.search );
-            var res = regExp.exec( origin );
-            var replace = origin.replace( regExp, entry.replace );
-            dom.innerHTML = replace;
+            content = content.replace( regExp, entry.replace );
         }
     }
+
+    return content;
 }
 
-/*
-function replaceNaverComment( dom )
-{
-    var origin = dom.innerHTML;
+var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+        var status = xhr.status;
+        if (status === 200) {
+            callback(null, xhr.response);
+        } else {
+            callback(status, xhr.response);
+        }
+    };
+    xhr.send();
+};
 
-    if( origin.indexOf( '해라', 0 ) != -1 ) {
-        var replace = replaceComment( '해라', '하세요', origin );
-        dom.innerHTML = replace;
-    } else {
-        dom.innerHTML = 'Test';
-    }
-}
-*/
+window.setTimeout(function() {
 
-function replaceComment( search, replace, text )
-{
-    var _text = text.replace( search, replace );
-    return _text;
-}
+    chrome.storage.local.get(['copt'], function(result) {
+        console.log( result );
+        //console.log('Value currently is ' + result.key);
+    });
+
+    //말뭉치 가져오기
+    //말뭉치를 가져온 다음에 실행
+    getJSON(
+        'https://raw.githubusercontent.com/ChangSungsil/dict/master/dictionary.json',
+        function(err, data) {
+            if( err !== null ) {
+                alert( 'Error' );
+            } else {
+                for ( var i in data ) {
+                    nc_dictionary.addCorpus(data[i]);
+                }
+
+                var contents = document.getElementsByClassName('u_cbox_contents');
+                for( var j = 0, k = contents.length; j < k; j++ ) {
+                    var content = contents[j].innerHTML;
+
+                    //console.log( content );
+                    contents[j].innerHTML = nc_content.getSanitizedContent( content );
+                    if( content != contents[j].innerHTML ) {
+                        //console.warn( '[Change] : ' + contents[j].innerHTML );
+                    }
+                }
+            }
+        }
+    );
+}, 2000);
