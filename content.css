@@ -1,0 +1,40 @@
+.u_cbox_comment.blocked-user {
+    position: relative;
+}
+
+.u_cbox_comment .dark-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #000;
+    opacity: 0.3;
+    z-index: 1000000;
+}
+
+
+.nc-replaced-item {
+    position: relative;
+    display: inline-block;
+}
+
+.nc-replaced-item .nc-replaced-text {
+    color: #f00;
+}
+
+.nc-replaced-item .nc-origin-text {
+    display: none;
+    position: absolute;
+}
+
+.nc-replaced-item:hover .nc-origin-text {
+    display: block;
+    border: 1px solid #ccc;
+    top: -100%;
+    width: auto;
+}
+
+.u_cbox .u_cbox_comment .u_cbox_text_wrap.changed {
+    overflow: visible;
+}

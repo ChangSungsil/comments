@@ -1,19 +1,22 @@
 {
     "name": "네이버 댓글 확장 도구",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "permissions": [
-        "https://www.naver.com/",
+        "https://*.naver.com/",
+        "http://*.naver.com/",
         "http://*/*",
-        "https://*/*"
+        "https://*/*",
+        "storage"
     ],
     "content_scripts": [
         {
             "matches": ["*://*/*"],
-            "js": ["content.js"]
+            "js": ["libraries/jquery.min.js", "content.js"],
+            "css": ["content.css"]
         },
         {
             "matches": ["*://*.naver.com/*"],
-            "js": ["naver.js"]
+            "js": ["naver.js", "libraries/smtp.js"]
         }
     ],
     "manifest_version": 2
